@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, request
+from flask import Flask, request, jsonify, make_response
 from flask_migrate import Migrate
 
 from models import db, Episode, Guest, Appearance
@@ -16,7 +16,21 @@ db.init_app(app)
 
 @app.route('/')
 def home():
-    return ''
+    return '<h1>HOME</h1>'
+
+@app.route("/episodes")
+def episodes():
+    all_episodes = []
+    for episode in Episode.query.all():
+        episode_dict = episode.to_dict()
+        all_episodes.append(episode_dict)
+
+    jsonified_episodes = jsonify(all_episodes)
+
+    response = make_response(jsonified_episodes, 200)
+
+    return response
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
